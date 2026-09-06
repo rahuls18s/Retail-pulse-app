@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     stages {
+
         stage('Install Dependencies') {
             steps {
                 bat 'npm ci'
@@ -14,15 +15,16 @@ pipeline {
             }
         }
 
-        stage('Deploy to Vercel') {
+        stage('Deploy to AWS S3') {
             steps {
                 withCredentials([
-                    string(
-                        credentialsId: 'VERCEL_TOKEN',
-                        variable: 'VERCEL_TOKEN'
+                    usernamePassword(
+                        credentialsId: 'AWS_S3_CREDENTIALS',
+                        usernameVariable: 'AWS_ACCESS_KEY_ID',
+                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
                     )
                 ]) {
-                    bat 'npx vercel deploy --prod --yes --project retail-pulse-lab --token=%VERCEL_TOKEN%'
+                    bat 'aws --version'
                 }
             }
         }
