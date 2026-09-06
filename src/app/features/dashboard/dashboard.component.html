@@ -1,0 +1,161 @@
+<app-page-header
+  eyebrow="MONDAY, SEPTEMBER 06, 2026 - 10:42 AM"
+  title="Good morning, Rahul"
+  subtitle="Here is the pulse of your retail portfolio today."
+  actionLabel="RUN INTERACTIVE DEMO"
+  (action)="runDemo()"
+/>
+<section class="filter-bar card">
+  <strong>Portfolio filters</strong
+  ><label
+    >Region<select
+      [ngModel]="region()"
+      (ngModelChange)="region.set($event)"
+    >
+      <option>All regions</option>
+      @for (item of data.regions(); track item) {
+        <option>{{ item }}</option>
+      }
+    </select></label
+  ><label
+    >Category<select
+      [ngModel]="category()"
+      (ngModelChange)="category.set($event)"
+    >
+      @for (item of categories(); track item) {
+        <option>{{ item }}</option>
+      }
+    </select></label
+  ><label
+    >Product<select
+      [ngModel]="data.selectedProductId()"
+      (ngModelChange)="data.selectProduct($event); engine.syncProduct()"
+    >
+      @for (item of data.products(); track item.id) {
+        <option [value]="item.id">{{ item.name }}</option>
+      }
+    </select></label
+  ><label
+    >Date range<select>
+      <option>Last 30 days</option>
+      <option>Last 90 days</option>
+    </select></label
+  >
+</section>
+<section class="kpi-grid">
+  @for (kpi of kpis(); track kpi.label) {
+    <app-kpi-card
+      [label]="kpi.label"
+      [value]="kpi.value"
+      [delta]="kpi.delta"
+      [tone]="kpi.tone"
+    />
+  }
+</section>
+<section class="dashboard-grid">
+  <article class="card panel trend-panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">PERFORMANCE OVER TIME</p>
+        <h2>Revenue trend</h2>
+      </div>
+      <span class="legend">Revenue - Target</span>
+    </div>
+    <div class="trend-chart">
+      <div class="axis">
+        <span>INR 5M</span><span>INR 4M</span><span>INR 3M</span><span>INR 2M</span
+        ><span>INR 1M</span><span>INR 0</span>
+      </div>
+      <svg
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0 68 L10 55 L20 61 L30 42 L40 49 L50 32 L60 38 L70 23 L80 29 L90 14 L100 8 L100 100 L0 100Z"
+          fill="#7665ff18"
+        />
+        <polyline
+          points="0,68 10,55 20,61 30,42 40,49 50,32 60,38 70,23 80,29 90,14 100,8"
+          fill="none"
+          stroke="#7665ff"
+          stroke-width="1.7"
+        />
+      </svg>
+    </div>
+    <footer>
+      <b>UP 12.8%</b> vs last period <span>Peak: <strong>INR 4.84M</strong></span>
+    </footer>
+  </article>
+  <article class="card panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">PORTFOLIO MIX</p>
+        <h2>Category performance</h2>
+      </div>
+      <a routerLink="/products">View all &gt;</a>
+    </div>
+    @for (
+      item of [
+        { name: 'Beverages', value: 86, total: 'INR 4.2M', color: '#7665ff' },
+        { name: 'Electronics', value: 72, total: 'INR 3.4M', color: '#22b9a6' },
+        { name: 'Grocery', value: 61, total: 'INR 2.7M', color: '#f5b84f' },
+        { name: 'Fashion', value: 48, total: 'INR 1.9M', color: '#ec6b9a' },
+      ];
+      track item.name
+    ) {
+      <div class="bar-row">
+        <span
+          >{{ item.name }} <b>{{ item.total }}</b></span
+        >
+        <div>
+          <i
+            [style.width.%]="item.value"
+            [style.background]="item.color"
+          ></i>
+        </div>
+        <small>+{{ item.value / 10 | number: '1.1-1' }}% growth</small>
+      </div>
+    }
+  </article>
+</section>
+<section class="dashboard-grid">
+  <article class="card panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">REGIONAL SIGNAL</p>
+        <h2>Regional performance</h2>
+      </div>
+      <a routerLink="/regions">Open report &gt;</a>
+    </div>
+    @for (item of regions; track item.name) {
+      <div class="region-row">
+        <span>{{ $index + 1 }}</span
+        ><i [style.background]="item.accent"></i><b>{{ item.name }}</b
+        ><strong>{{ money(item.revenue) }}</strong
+        ><em [class.negative]="item.growth < 0">{{ signed(item.growth) }}</em>
+      </div>
+    }
+  </article>
+  <article class="card panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">RULE-BASED SIGNALS</p>
+        <h2>Business alerts</h2>
+      </div>
+      <a routerLink="/simulation">Open lab &gt;</a>
+    </div>
+    @for (alert of alerts(); track alert.title) {
+      <div class="alert-row">
+        <span [class]="alert.type">{{ alert.type === 'success' ? 'OK' : '!' }}</span>
+        <div>
+          <b>{{ alert.title }}</b
+          ><small>{{ alert.body }}</small>
+        </div>
+      </div>
+    }
+  </article>
+</section>
+<p class="disclaimer">
+  INFO - Retail Pulse Lab uses synthetic retail data and a configurable simulation model for
+  educational and portfolio demonstration purposes.
+</p>

@@ -1,0 +1,11 @@
+<article class="card kpi-card">
+  <div class="kpi-label">{{ label() }}</div>
+  <strong>{{ value() }}</strong>
+  <div
+    class="kpi-delta"
+    [class.negative]="delta() < 0"
+  >
+    {{ delta() >= 0 ? '+' : '' }}{{ delta().toFixed(1) }}% <span>vs previous period</span>
+  </div>
+  <div class="kpi-bars {{ tone() }}"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+</article>

@@ -1,0 +1,107 @@
+<app-page-header
+  eyebrow="PORTFOLIO EXPLORER - SYNTHETIC RETAIL DATA"
+  [title]="title"
+  [subtitle]="subtitle"
+/>
+@if (kind === 'products') {
+  <section class="product-grid">
+    @for (product of data.products(); track product.id) {
+      <article
+        class="product-card card"
+        (click)="select(product.id)"
+      >
+        <span
+          class="product-icon"
+          [style.background]="product.color"
+          >{{ product.name.charAt(0) }}</span
+        >
+        <h2>{{ product.name }}</h2>
+        <p>{{ product.brand }} - {{ product.category }}</p>
+        <div>
+          <span
+            >Price <b>INR {{ product.price | number }}</b></span
+          ><span
+            >Stock <b>{{ product.stock }}%</b></span
+          ><span
+            >Demand <b>{{ product.baseDemand | number }}</b></span
+          >
+        </div>
+      </article>
+    }
+  </section>
+}
+@if (kind === 'consumers') {
+  <section class="two-column">
+    <article class="card panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">SEGMENT RESPONSE MAP</p>
+          <h2>Consumer segments</h2>
+        </div>
+      </div>
+      @for (segment of segments; track segment) {
+        <div class="segment-row">
+          <i></i><span>{{ segment }}</span
+          ><b>{{
+            segment === 'Price Sensitive'
+              ? '-12.4%'
+              : segment === 'Premium Buyers'
+                ? '-3.2%'
+                : '+1.8%'
+          }}</b>
+        </div>
+      }
+    </article>
+    <article class="card panel">
+      <p class="eyebrow">MODEL INPUT</p>
+      <h2>{{ data.selectedProduct().name }}</h2>
+      <p class="muted">
+        Segment response is simulated from current price, promotion, rating, and loyalty
+        assumptions.
+      </p>
+    </article>
+  </section>
+}
+@if (kind === 'regions') {
+  <section class="card panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">REGIONAL PERFORMANCE</p>
+        <h2>Revenue by market</h2>
+      </div>
+    </div>
+    @for (region of regions; track region.name) {
+      <div class="region-row">
+        <span>{{ $index + 1 }}</span
+        ><i [style.background]="region.accent"></i><b>{{ region.name }}</b
+        ><strong>{{ money(region.revenue) }}</strong
+        ><em [class.negative]="region.growth < 0">{{ signed(region.growth) }}</em>
+      </div>
+    }
+  </section>
+}
+@if (kind === 'competitors') {
+  <section class="card panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">COMPETITIVE LANDSCAPE</p>
+        <h2>Price intelligence</h2>
+      </div>
+      <span class="badge">Index {{ engine.result().competitiveness }}/100</span>
+    </div>
+    @for (
+      item of [
+        { name: 'Your product', code: 'RP', value: engine.input().price },
+        { name: 'Competitor A', code: 'A', value: engine.input().competitorPrice },
+        { name: 'Competitor B', code: 'B', value: engine.input().competitorPrice * 1.06 },
+      ];
+      track item.code
+    ) {
+      <div class="competitor-row">
+        <span>{{ item.code }}</span
+        ><b>{{ item.name }}</b
+        ><strong>INR {{ item.value | number: '1.0-0' }}</strong>
+      </div>
+    }
+  </section>
+}

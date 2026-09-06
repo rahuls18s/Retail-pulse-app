@@ -1,0 +1,169 @@
+<app-page-header
+  eyebrow="CONSUMER BEHAVIOR SIMULATOR - MODEL V1.4"
+  title="Simulation lab"
+  subtitle="Stress-test pricing, promotions, and availability before you make the move."
+  actionLabel="RUN DEMO"
+  (action)="runDemo()"
+/>
+<section class="simulation-layout">
+  <article class="card panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">SIMULATION INPUTS</p>
+        <h2>{{ product().name }}</h2>
+      </div>
+      <span class="badge">Synthetic model</span>
+    </div>
+    <select
+      class="wide-select"
+      [ngModel]="data.selectedProductId()"
+      (ngModelChange)="data.selectProduct($event); engine.syncProduct()"
+    >
+      @for (item of data.products(); track item.id) {
+        <option [value]="item.id">{{ item.name }} - {{ item.category }}</option>
+      }
+    </select>
+    <div class="input-grid">
+      @for (
+        field of [
+          { label: 'Price', key: 'price', value: engine.input().price },
+          { label: 'Discount', key: 'discount', value: engine.input().discount },
+          {
+            label: 'Competitor price',
+            key: 'competitorPrice',
+            value: engine.input().competitorPrice,
+          },
+          { label: 'Stock availability', key: 'stock', value: engine.input().stock },
+          { label: 'Marketing spend', key: 'marketingSpend', value: engine.input().marketingSpend },
+          { label: 'Seasonality index', key: 'seasonality', value: engine.input().seasonality },
+        ];
+        track field.key
+      ) {
+        <label
+          >{{ field.label
+          }}<input
+            type="number"
+            [ngModel]="field.value"
+            (ngModelChange)="update(field.key, $event)"
+        /></label>
+      }
+    </div>
+    <label class="field-label"
+      >Promotion mechanic<select
+        [ngModel]="engine.input().promotion"
+        (ngModelChange)="update('promotion', $event)"
+      >
+        <option>Discount</option>
+        <option>None</option>
+        <option>Buy 1 Get 1</option>
+        <option>Bundle</option>
+        <option>Coupon</option>
+        <option>Cashback</option>
+        <option>Flash Sale</option>
+      </select></label
+    >
+    <div class="formula-note">
+      <b>FX</b
+      ><span
+        ><strong>Model logic</strong>Demand = base demand x price elasticity x promotion lift x
+        availability x competitive position x seasonality.</span
+      >
+    </div>
+  </article>
+  <div class="stack">
+    <article class="card panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">PROJECTED IMPACT</p>
+          <h2>Scenario vs baseline</h2>
+        </div>
+        <span class="live">LIVE - Updating</span>
+      </div>
+      <div class="impact-grid">
+        @for (
+          item of [
+            { label: 'Revenue', value: result().revenueDelta },
+            { label: 'Demand', value: result().demandDelta },
+            { label: 'Market share', value: result().shareDelta },
+            { label: 'Margin', value: result().marginDelta },
+          ];
+          track item.label
+        ) {
+          <div>
+            <small>{{ item.label }}</small
+            ><strong [class.negative]="item.value < 0">{{ signed(item.value) }}</strong
+            ><em>vs baseline</em>
+          </div>
+        }
+      </div>
+      <div class="impact-footer">
+        {{ product().name }} - {{ engine.input().promotion }} at {{ engine.input().discount }}%
+        <b>{{ money(result().revenue) }}</b>
+      </div>
+    </article>
+    <article class="card panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">PRICE ELASTICITY</p>
+          <h2>Demand curve</h2>
+        </div>
+        <strong class="elasticity">{{ product().elasticity }}</strong>
+      </div>
+      <svg
+        class="curve"
+        viewBox="0 0 100 50"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0 5 C22 8 32 18 48 27 C67 38 82 44 100 48"
+          fill="none"
+          stroke="#7665ff"
+          stroke-width="2"
+        />
+      </svg>
+      <p class="muted">
+        A 1% price increase is estimated to change demand by approximately
+        <b>{{ product().elasticity }}%</b>.
+      </p>
+    </article>
+  </div>
+</section>
+<section class="two-column">
+  <article class="card panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">AUDIENCE RESPONSE</p>
+        <h2>Consumer segments</h2>
+      </div>
+    </div>
+    @for (segment of segments(); track segment.name) {
+      <div class="segment-row">
+        <i [style.background]="segment.color"></i><span>{{ segment.name }}</span
+        ><b [class.negative]="segment.impact < 0">{{ signed(segment.impact) }}</b>
+      </div>
+    }
+  </article>
+  <article class="card panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">PRICE INTELLIGENCE</p>
+        <h2>Competitive position</h2>
+      </div>
+      <span class="badge">Index {{ result().competitiveness }}/100</span>
+    </div>
+    @for (
+      item of [
+        { name: 'Your product', code: 'RP', value: engine.input().price },
+        { name: 'Competitor A', code: 'A', value: engine.input().competitorPrice },
+        { name: 'Competitor B', code: 'B', value: engine.input().competitorPrice * 1.06 },
+      ];
+      track item.code
+    ) {
+      <div class="competitor-row">
+        <span>{{ item.code }}</span
+        ><b>{{ item.name }}</b
+        ><strong>INR {{ item.value | number: '1.0-0' }}</strong>
+      </div>
+    }
+  </article>
+</section>

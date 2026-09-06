@@ -1,0 +1,107 @@
+<app-page-header
+  eyebrow="OBSERVABILITY - RXJS TRANSACTION STREAM"
+  [title]="mode === 'live' ? 'Live transactions' : 'Performance lab'"
+  [subtitle]="
+    mode === 'live'
+      ? 'Buffered synthetic retail events updating in real time.'
+      : 'See how the app handles large synthetic datasets.'
+  "
+/>
+<section class="stats-grid">
+  <article class="card stat-card">
+    <b>LIVE</b><span>Stream status<strong>Connected</strong></span>
+  </article>
+  <article class="card stat-card">
+    <b>DATA</b
+    ><span
+      >Transactions loaded<strong>{{ datasetSize() | number }}</strong></span
+    >
+  </article>
+  <article class="card stat-card">
+    <b>WORK</b><span>Worker processing<strong>38ms</strong></span>
+  </article>
+  <article class="card stat-card">
+    <b>RX</b><span>Source<strong>shareReplay(1)</strong></span>
+  </article>
+</section>
+@if (mode === 'live') {
+  <section class="card panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">LARGE DATASET EXPLORER</p>
+        <h2>Transaction stream</h2>
+      </div>
+      <span class="live">LIVE - RxJS</span>
+    </div>
+    <cdk-virtual-scroll-viewport
+      itemSize="44"
+      class="transaction-viewport"
+      ><div class="transaction-row header">
+        <span>Timestamp</span><span>Product</span><span>Region</span><span>Segment</span
+        ><span>Revenue</span>
+      </div>
+      <div
+        *cdkVirtualFor="let transaction of events()"
+        class="transaction-row"
+      >
+        <span>{{ transaction.timestamp | date: 'MMM d, HH:mm' }}</span
+        ><b>{{ transaction.productName }}</b
+        ><span>{{ transaction.region }}</span
+        ><span>{{ transaction.customerSegment }}</span
+        ><strong>INR {{ transaction.revenue | number }}</strong>
+      </div></cdk-virtual-scroll-viewport
+    >
+  </section>
+}
+@if (mode === 'performance') {
+  <section class="two-column">
+    <article class="card panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">DATASET BENCHMARK</p>
+          <h2>Processing profile</h2>
+        </div>
+        <span class="badge">Web Worker</span>
+      </div>
+      <div class="dataset-buttons">
+        @for (size of [10000, 50000, 100000, 250000, 500000]; track size) {
+          <button
+            [class.active]="datasetSize() === size"
+            (click)="data.setDatasetSize(size)"
+          >
+            {{ size / 1000 }}k
+          </button>
+        }
+      </div>
+      @for (
+        metric of [
+          { label: 'Transactions loaded', value: datasetSize() | number },
+          { label: 'Filtering time', value: '16ms' },
+          { label: 'Simulation time', value: '42ms' },
+          { label: 'Worker processing', value: '38ms' },
+          {
+            label: 'Memory estimate',
+            value: ((datasetSize() / 1000) * 1.8 | number: '1.0-0') + ' MB',
+          },
+        ];
+        track metric.label
+      ) {
+        <div class="metric-row">
+          <span>{{ metric.label }}</span
+          ><b>{{ metric.value }}</b>
+        </div>
+      }
+    </article>
+    <article class="card panel center-panel">
+      <p class="eyebrow">BACKGROUND PROCESSING</p>
+      <h2>Worker throughput</h2>
+      <div class="throughput-ring">
+        <strong>38<small>ms</small></strong>
+      </div>
+      <p class="muted">
+        Large transaction aggregation runs off the main thread, keeping controls and charts
+        responsive.
+      </p>
+    </article>
+  </section>
+}

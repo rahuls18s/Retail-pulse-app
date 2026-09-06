@@ -1,0 +1,45 @@
+<div class="app-shell">
+  <aside
+    class="sidebar"
+    aria-label="Primary navigation"
+  >
+    <a
+      class="brand"
+      routerLink="/overview"
+      ><span class="brand-mark">RP</span
+      ><span><strong>Retail Pulse</strong><small>LAB / CONSUMER INTELLIGENCE</small></span></a
+    >
+    <div class="workspace-switcher">W&nbsp;&nbsp; Portfolio workspace</div>
+    <p class="nav-label">WORKSPACE</p>
+    <nav>
+      @for (item of navigation; track item.path) {
+        <a
+          class="nav-item"
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ><span class="nav-icon">{{ item.icon }}</span
+          >{{ item.label }}</a
+        >
+      }
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <div class="model-note">
+      <span>FX</span>
+      <div>
+        <strong>Simulation model v1.4</strong><small>Synthetic data - configurable formulas</small>
+      </div>
+    </div>
+    <div class="profile">
+      <span class="avatar">RS</span
+      ><span><strong>Rahul Sharma</strong><small>Frontend engineer</small></span>
+    </div>
+  </aside>
+  <main class="main-content">
+    <header class="topbar">
+      <span>Workspace&nbsp; / &nbsp;<strong>Retail Pulse Lab</strong></span
+      ><span class="sync-status">LIVE model synced&nbsp;&nbsp; | &nbsp;?</span>
+    </header>
+    <div class="route-content"><router-outlet /></div>
+  </main>
+</div>

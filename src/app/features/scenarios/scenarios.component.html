@@ -1,0 +1,61 @@
+<app-page-header
+  eyebrow="DECISION SUPPORT - SAVED LOCALLY"
+  title="Scenario comparison"
+  subtitle="Capture multiple what-if conditions and compare their business impact."
+/>
+<div class="scenario-toolbar">
+  <input
+    placeholder="Scenario name"
+    [ngModel]="name()"
+    (ngModelChange)="name.set($event)"
+  /><button
+    class="primary-button"
+    (click)="add()"
+  >
+    SAVE SCENARIO
+  </button>
+</div>
+<section class="scenario-grid">
+  <article class="scenario-card baseline">
+    <small>BASELINE</small>
+    <h3>{{ product().name }}</h3>
+    <p>Current configuration</p>
+    <span
+      >Price <b>INR {{ engine.input().price | number }}</b></span
+    ><span
+      >Discount <b>{{ engine.input().discount }}%</b></span
+    ><span
+      >Stock <b>{{ engine.input().stock }}%</b></span
+    ><strong>{{ money(engine.baselineResult().revenue) }}</strong>
+  </article>
+  @for (scenario of scenarios(); track scenario.id) {
+    <article class="scenario-card {{ scenario.tone }}">
+      <button
+        class="remove"
+        (click)="scenarioStore.remove(scenario.id)"
+      >
+        X</button
+      ><small>SAVED SCENARIO</small>
+      <h3>{{ scenario.name }}</h3>
+      <p>{{ scenario.input.promotion }} - {{ scenario.input.discount }}% discount</p>
+      <span
+        >Price <b>INR {{ scenario.input.price | number }}</b></span
+      ><span
+        >Competitor <b>INR {{ scenario.input.competitorPrice | number }}</b></span
+      ><span
+        >Stock <b>{{ scenario.input.stock }}%</b></span
+      ><strong
+        >{{ money(scenario.result.revenue) }}
+        <em [class.negative]="scenario.result.revenueDelta < 0">{{
+          signed(scenario.result.revenueDelta)
+        }}</em></strong
+      >
+    </article>
+  }
+</section>
+@if (!scenarios().length) {
+  <div class="empty-state card">
+    <h2>No saved scenarios yet</h2>
+    <p>Adjust the Simulation Lab, then save it here.</p>
+  </div>
+}
