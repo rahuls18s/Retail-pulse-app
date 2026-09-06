@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Retail Pulse Lab
 
 ## Interactive Consumer Behavior & Retail Analytics Simulator
@@ -89,3 +90,7 @@ npm test -- --watch=false --browsers=ChromeHeadless
 - Playwright end-to-end coverage and CI quality gates.
 - Route-level lazy loading for each workspace module.
 
+=======
+# Retail-pulse-app
+simulate how changes in product price, discounts, promotions, stock availability, competitor pricing, customer segments, and seasonality affect consumer demand, revenue, market share, and product performance.
+>>>>>>> bd96a1d02ca487793bb98f93b552419bf48cc5e7
