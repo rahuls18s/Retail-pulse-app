@@ -22,7 +22,7 @@ pipeline {
                         variable: 'VERCEL_TOKEN'
                     )
                 ]) {
-                    bat 'npx vercel --prod --yes --token=%VERCEL_TOKEN%'
+                    bat 'npx vercel deploy --prod --yes --project retail-pulse-lab --token=%VERCEL_TOKEN%'
                 }
             }
         }
