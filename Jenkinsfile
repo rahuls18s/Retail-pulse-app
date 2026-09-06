@@ -24,7 +24,7 @@ pipeline {
                         passwordVariable: 'AWS_SECRET_ACCESS_KEY'
                     )
                 ]) {
-                    bat 'aws --version'
+                    bat 'aws s3 sync "dist\\retail-pulse-lab\\browser" "s3://retail-pulse-lab-angular" --delete --region ap-south-1'
                 }
             }
         }
